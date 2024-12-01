@@ -1,4 +1,4 @@
-import tool.elevation_service as elevation_service
+import elevation_service as elevation_service
 import os
 
 tif_path = f"{os.path.dirname(os.path.abspath(__file__))}/tool/tif_merged/merged_all.tif"
