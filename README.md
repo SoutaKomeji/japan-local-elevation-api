@@ -10,7 +10,7 @@ sudo apt-get install cabextract unzip
 
 ## DL
 
-1. 国土地理院の 10m メッシュの県単位の標高モデルを DL して cab ディレクトリに配置
+1. 国土地理院の 10m メッシュの県単位の標高モデルを DL して tool/cab ディレクトリに配置
 
 ## 解凍 and 仕分け
 
