@@ -1,6 +1,6 @@
 import os
 from osgeo import gdal
-from convert_tif_epsg_4326 import output_path as input_directory, output_merge_tif_path as output_directory
+from tif_jgd_to_epsg4326 import output_path as input_directory, output_merge_tif_path as output_directory
 
 def find_tiff_files(directory):
     tiff_files = []
