@@ -24,19 +24,71 @@ CAB_FILES=("$CAB_DIR"/*.cab)
 TOTAL_CAB=${#CAB_FILES[@]}
 CURRENT_CAB=0
 
-# CABファイルの処理
-echo "Step 1: Extracting CAB files..."
-if [ "$TOTAL_CAB" -eq 0 ]; then
-    echo "No CAB files found in $CAB_DIR."
+# # (.cabまたは.zip)リスト取得
+# # ARCHIVE_FILES=("$CAB_DIR"/*.cab "$CAB_DIR"/*.zip)
+# ARCHIVE_FILES=($(find "$CAB_DIR" -type f \( -iname "*.cab" -o -iname "*.zip" \)))
+# TOTAL_CAB=${#ARCHIVE_FILES[@]}
+# CURRENT_ArCHIVE=0
+
+# アーカイブファイルのリスト取得（.cab または .zip）
+ARCHIVE_FILES=($(find "$CAB_DIR" -type f \( -iname "*.cab" -o -iname "*.zip" \)))
+TOTAL_ARCHIVE=${#ARCHIVE_FILES[@]}
+CURRENT_ARCHIVE=0
+
+echo "Step 1: Extracting archive files..."
+if [ "$TOTAL_ARCHIVE" -eq 0 ]; then
+    echo "No archive files found in $CAB_DIR."
 else
-    for CAB_FILE in "${CAB_FILES[@]}"; do
-        CURRENT_CAB=$((CURRENT_CAB + 1))
-        print_progress_bar "$CURRENT_CAB" "$TOTAL_CAB"
-        
-        cabextract -d "$TEMP_DIR" "$CAB_FILE" > /dev/null 2>&1
+    for ARCHIVE_FILE in "${ARCHIVE_FILES[@]}"; do
+        CURRENT_ARCHIVE=$((CURRENT_ARCHIVE + 1))
+        print_progress_bar "$CURRENT_ARCHIVE" "$TOTAL_ARCHIVE"
+
+        EXT="${ARCHIVE_FILE##*.}"
+        EXT_LOWER=$(echo "$EXT" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
+
+        if [ "$EXT_LOWER" = "cab" ]; then
+            cabextract -d "$TEMP_DIR" "$ARCHIVE_FILE" > /dev/null 2>&1
+        elif [ "$EXT_LOWER" = "zip" ]; then
+            unzip -d "$TEMP_DIR" "$ARCHIVE_FILE" > /dev/null 2>&1
+        else
+            echo "Unknown archive type: $ARCHIVE_FILE"
+        fi
     done
 fi
 echo ""
+
+# # CABファイルの処理
+# echo "Step 1: Extracting CAB files..."
+# if [ "$TOTAL_CAB" -eq 0 ]; then
+#     echo "No CAB files found in $CAB_DIR."
+# else
+#     for CAB_FILE in "${CAB_FILES[@]}"; do
+#         CURRENT_CAB=$((CURRENT_CAB + 1))
+#         print_progress_bar "$CURRENT_CAB" "$TOTAL_CAB"
+        
+#         cabextract -d "$TEMP_DIR" "$CAB_FILE" > /dev/null 2>&1
+#     done
+# fi
+# echo ""
+
+# # # アーカイブファイルの処理
+# # echo "Step 1: Extracting archive files..."
+# # if [ "$TOTAL_ARCHIVE" -eq 0 ]; then
+# #     echo "No archive files found in $CAB_DIR."
+# # else
+# #     for ARCHIVE_FILE in "${ARCHIVE_FILES[@]}"; do
+# #         CURRENT_ARCHIVE=$((CURRENT_ARCHIVE + 1))
+# #         print_progress_bar "$CURRENT_ARCHIVE" "$TOTAL_ARCHIVE"
+
+# #         EXT="${ARCHIVE_FILE##*.}"
+# #         if [ "$EXT" = "cab" ]; then
+# #             cabextract -d "$TEMP_DIR" "$ARCHIVE_FILE" > /dev/null 2>&1
+# #         elif [ "$EXT" = "zip" ]; then
+# #             unzip -d "$TEMP_DIR" "$ARCHIVE_FILE" > /dev/null 2>&1
+# #         fi
+# #     done
+# # fi
+# # echo ""
 
 # ZIPファイルのリスト取得
 ZIP_FILES=($(find "$TEMP_DIR" -name "*.zip"))
